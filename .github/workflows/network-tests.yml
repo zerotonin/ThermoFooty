@@ -1,0 +1,44 @@
+name: network-tests
+
+# Integration tests that hit live upstream services (meteostat, NOAA
+# PSL THREDDS for 20CRv3, ECMWF CDS for ERA5, football-data.co.uk,
+# fbref via worldfootballR).  Excluded from the default `tests`
+# workflow because the upstreams are flaky and a cold cache makes
+# a single run take several minutes.  Run on a weekly schedule so
+# the ingestion + cascade pipeline doesn't bit-rot silently, and
+# on-demand via workflow_dispatch.
+#
+# Allowed to fail without blocking main: a 502 from NOAA or a
+# transient fbref rate-limit is not a defect in our code, and we
+# don't want a green-CI gate that depends on third-party uptime.
+
+on:
+  schedule:
+    # Mondays 09:00 UTC — early-week so a flaky run leaves room to
+    # investigate before the next release window.
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: network-tests-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  network:
+    name: pytest -m network
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install package (full extras for network adapters)
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[all]"
+      - name: Run network-marked tests
+        run: pytest -m network -v --tb=short

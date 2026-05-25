@@ -1,0 +1,8 @@
+# Pinned docs-only dependencies; kept separate from the package's
+# `[project.optional-dependencies].dev` so the docs build doesn't
+# require every dev tool to be installed.
+
+sphinx>=7.2,<9
+furo>=2024.1
+myst-parser>=2.0
+sphinx-copybutton>=0.5
