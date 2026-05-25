@@ -1,0 +1,76 @@
+cff-version: 1.2.0
+title: "ThermoFooty: pre-registered natural-experiment test of the heat-aggression hypothesis on European soccer"
+message: "If you use this software, please cite both the software (this entry) and the underlying pre-registration (OSF DOI in references below)."
+type: software
+version: "0.1.0-dev0"
+date-released: "2026-05-26"
+license: MIT
+url: "https://github.com/zerotonin/ThermoFooty"
+repository-code: "https://github.com/zerotonin/ThermoFooty"
+authors:
+  - family-names: Geurten
+    given-names: "Bart R.H."
+    orcid: "https://orcid.org/0000-0002-1816-3241"
+    affiliation: "Department of Zoology, University of Otago, Dunedin, New Zealand"
+keywords:
+  - heat-aggression
+  - natural-experiment
+  - case-crossover
+  - soccer
+  - football
+  - temperature-anomaly
+  - computational-social-science
+  - criminology
+  - pre-registration
+  - Qatar-2022
+abstract: >-
+  ThermoFooty pre-registers and executes a natural-experiment test of
+  the heat-aggression hypothesis on European soccer.  The design
+  exploits the fact that fixtures are scheduled before weather is
+  realised, eliminating the Field-1992 outdoor-opportunity confound
+  that limits modern crime-data designs.  Primary confirmatory test
+  (H1): time-stratified case-crossover conditional logit on Big-5
+  European league matches 1970-2026, asking whether the odds that a
+  referee issues a direct red card for violent conduct rise with the
+  day-of-match maximum-temperature anomaly at the stadium.  Auxiliary
+  battery covers crowd-violence (H2 on pooled English UK Home Office
+  + German ZIS-Jahresberichte arrests), indoor-stadia attenuation,
+  heat-by-stakes interactions, within-player fixed effects,
+  population- and per-player breakpoint analyses, player-mobility
+  natural experiments, cross-league heterogeneity, and a tournament
+  panel with cooled-vs-open-stadia contrasts including Qatar 2022
+  Stadium 974 as a within-tournament natural control.  Built on top
+  of the ThermoStrife weather cascade (Geurten 2026, DOI
+  10.5281/zenodo.20371612) and the reRandomStats statistics toolkit
+  (Geurten 2026, DOI 10.5281/zenodo.20387255).
+references:
+  - type: generic
+    title: "ThermoFooty pre-registration"
+    authors:
+      - family-names: Geurten
+        given-names: "Bart R.H."
+    year: 2026
+    url: "https://doi.org/10.17605/OSF.IO/YZVAK"
+    doi: "10.17605/OSF.IO/YZVAK"
+    notes: "Locked Secondary Data Preregistration at OSF, 2026-05-25, covering 1 confirmatory primary test plus 17 auxiliary hypotheses."
+  - type: generic
+    title: "ThermoFooty H1 AsPredicted one-pager cross-post"
+    authors:
+      - family-names: Geurten
+        given-names: "Bart R.H."
+    year: 2026
+    url: "https://aspredicted.org/av2un9.pdf"
+  - type: software
+    title: "ThermoStrife (companion historical-uprisings analysis with shared weather cascade)"
+    authors:
+      - family-names: Geurten
+        given-names: "Bart R.H."
+    year: 2026
+    doi: "10.5281/zenodo.20371612"
+  - type: software
+    title: "reRandomStats (shared statistics toolkit)"
+    authors:
+      - family-names: Geurten
+        given-names: "Bart R.H."
+    year: 2026
+    doi: "10.5281/zenodo.20387255"

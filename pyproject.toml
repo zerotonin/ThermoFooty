@@ -1,0 +1,117 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "thermofooty"
+version = "0.1.0-dev0"
+description = "Pre-registered natural-experiment test of the heat-aggression hypothesis on European soccer (player cards + crowd violence), built on top of the ThermoStrife weather cascade and reRandomStats statistics toolkit."
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
+authors = [
+    {name = "Bart R. H. Geurten", email = "bart.geurten@otago.ac.nz"},
+]
+keywords = [
+    "heat-aggression",
+    "natural-experiment",
+    "case-crossover",
+    "soccer",
+    "football",
+    "weather",
+    "temperature-anomaly",
+    "computational-social-science",
+    "criminology",
+    "behavioural-biology",
+    "pre-registration",
+    "Qatar-2022",
+]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Atmospheric Science",
+    "Topic :: Sociology",
+]
+dependencies = [
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "scipy>=1.11",
+    "statsmodels>=0.14",
+    "matplotlib>=3.7",
+    "tqdm>=4.65",
+    "sqlalchemy>=2.0",
+    "pyarrow>=14.0",
+    # Lab statistics toolkit — v0.2.0+ ships case_crossover, model_comparison,
+    # and dose_response submodules that ThermoFooty consumes natively.
+    "rerandomstats @ git+https://github.com/zerotonin/reRandomStats.git@v0.2.0",
+]
+
+[project.optional-dependencies]
+ingest = [
+    "requests>=2.31",
+    "beautifulsoup4>=4.12",
+    "pypdf>=4.0",
+    "pdfplumber>=0.11",
+]
+weather = [
+    # v2.x dropped 3.10 support; ThermoFooty's >=3.11 floor follows.
+    "meteostat>=2.0",
+    "cdsapi>=0.6",
+    "xarray>=2024.1",
+    "netCDF4>=1.6",
+    "geopy>=2.4",
+]
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "ruff>=0.1",
+    "sphinx>=7.2",
+    "furo>=2024.1",
+    "myst-parser>=2.0",
+    "sphinx-copybutton>=0.5",
+]
+all = ["thermofooty[ingest,weather,dev]"]
+
+[project.urls]
+Homepage = "https://github.com/zerotonin/ThermoFooty"
+Documentation = "https://zerotonin.github.io/ThermoFooty/"
+Repository = "https://github.com/zerotonin/ThermoFooty"
+Issues = "https://github.com/zerotonin/ThermoFooty/issues"
+"Pre-registration (OSF)" = "https://doi.org/10.17605/OSF.IO/YZVAK"
+"AsPredicted (H1)" = "https://aspredicted.org/av2un9.pdf"
+"Companion (ThermoStrife)" = "https://doi.org/10.5281/zenodo.20371612"
+"Companion (ThermoKourt)" = "https://github.com/zerotonin/thermokourt"
+
+[tool.setuptools.packages.find]
+include = ["thermofooty*"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+extend-exclude = ["data", "docs/_build"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Default-exclude network-marked tests (mirror ThermoStrife pattern): they
+# hit live upstreams (meteostat / NOAA / ECMWF / fbref) and are slow on a
+# cold cache.  Opt-in locally with `pytest -m network`; the network-tests.yml
+# weekly cron runs them against a fresh CI runner.
+addopts = "-v --tb=short -m 'not network'"
+markers = [
+    "network: test hits an external service (meteostat, ERA5, fbref, ZIS, …); cache is reused on rerun.",
+]
+filterwarnings = [
+    # boxplot(vert=) deprecation in matplotlib 3.10+; silence per the same
+    # rationale as ThermoStrife v0.1.1.
+    "ignore::PendingDeprecationWarning",
+]

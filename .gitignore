@@ -1,0 +1,80 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  ThermoFooty — .gitignore                                        ║
+# ║  « data is large and lives on DATADRIVE1; never commit it »      ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+# ── Data (entire `data/` is a symlink to DATADRIVE1; never commit) ──
+# The symlink itself stays untracked too — re-create it per machine
+# via `ln -sf $THERMOFOOTY_DATA_ROOT data`.
+data
+data/
+
+# ── SQLite databases (live under data/db on DATADRIVE1, but guard) ──
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+
+# ── Parquet / arrow caches (live under data/cache on DATADRIVE1) ────
+*.parquet
+*.arrow
+*.feather
+
+# ── Reports rendered locally; figures live in data/derived ─────────
+reports/figs/
+reports/*.html
+
+# ── Python ──────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+MANIFEST
+.eggs/
+
+# ── Test + coverage caches ──────────────────────────────────────────
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+.cache/
+
+# ── Lint + type-checker caches ──────────────────────────────────────
+.ruff_cache/
+.mypy_cache/
+.pytype/
+.pyre/
+
+# ── Sphinx ──────────────────────────────────────────────────────────
+docs/_build/
+docs/_autosummary/
+
+# ── Virtual environments ────────────────────────────────────────────
+venv/
+env/
+.venv/
+.env
+
+# ── IDEs ────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ── Jupyter ─────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ── Secrets (gitignored even outside the repo for safety) ───────────
+.cdsapirc
+*.key
+.env.local
+secrets.yaml
