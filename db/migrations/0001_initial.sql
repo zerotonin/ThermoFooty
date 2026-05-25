@@ -1,0 +1,15 @@
+-- ╔══════════════════════════════════════════════════════════════════╗
+-- ║  ThermoFooty migration 0001 — initial schema                     ║
+-- ║  « bootstrap from db/schema.sql »                                ║
+-- ╚══════════════════════════════════════════════════════════════════╝
+-- The initial schema is the contents of `db/schema.sql`; this file
+-- exists so the `apply_migrations()` machinery (Phase 2) has a
+-- starting point and so the migrations directory is non-empty from
+-- the scaffold pass.
+--
+-- Every later migration `db/migrations/NNNN_<slug>.sql` carries
+-- only its delta from the previous head, applied atomically.
+
+-- The initial schema is sourced from db/schema.sql.
+-- Re-applying this migration is a no-op: schema.sql uses
+-- CREATE TABLE IF NOT EXISTS / CREATE INDEX IF NOT EXISTS throughout.
