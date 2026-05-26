@@ -104,6 +104,14 @@ def main(argv: list[str]) -> int:
         help="Commit to SQLite every N probes (default 50).",
     )
     parser.add_argument(
+        "--workers", type=int, default=8,
+        help=(
+            "Number of concurrent cascade probes (default 8).  Probes "
+            "are I/O-bound (meteostat / ERA5 network calls), so threads "
+            "parallelise cleanly.  Use 1 to fall back to sequential."
+        ),
+    )
+    parser.add_argument(
         "--limit", type=int, default=None,
         help="Stop after N probes (useful for partial smoke runs).",
     )
@@ -131,7 +139,10 @@ def main(argv: list[str]) -> int:
             _print_tier_table(console, conn)
             return 0
 
-        console.log(f"Resolving {n:,} pending (stadium, date) probes …")
+        console.log(
+            f"Resolving {n:,} pending (stadium, date) probes "
+            f"with {args.workers} worker(s) …"
+        )
 
         by_tier: dict[str, int] = {}
         excluded = 0
@@ -148,7 +159,11 @@ def main(argv: list[str]) -> int:
             transient=False,
         ) as progress:
             task = progress.add_task("backfill", total=n)
-            for row in backfill_iter(conn, probes, commit_every=args.commit_every):
+            for row in backfill_iter(
+                conn, probes,
+                commit_every=args.commit_every,
+                workers=args.workers,
+            ):
                 by_tier[row.source_tier] = by_tier.get(row.source_tier, 0) + 1
                 if row.source_tier == "excluded_altitude":
                     excluded += 1

@@ -251,6 +251,30 @@ def test_coverage_by_tier_breaks_down_inserted_rows(conn, monkeypatch):
     assert abs(sum(tc.fraction for tc in tiers.values()) - 1.0) < 1e-9
 
 
+def test_backfill_iter_parallel_matches_sequential(conn, monkeypatch):
+    """workers > 1 must produce the same set of weather rows as
+    workers = 1 — same source_tier breakdown, same total row count.
+    The ThreadPoolExecutor path is an I/O speedup, not a behavioural
+    change.
+    """
+    monkeypatch.setattr(backfill_mod, "resolve_event_anomaly", _fake_cascade_factory())
+    # Sequential baseline
+    list(backfill_iter(conn, select_pending_probes(conn), commit_every=1, workers=1))
+    seq_rows = conn.execute(
+        "SELECT source_tier, count(*) FROM weather GROUP BY source_tier ORDER BY source_tier"
+    ).fetchall()
+
+    # Wipe weather, re-run with workers=4
+    conn.execute("DELETE FROM weather")
+    conn.commit()
+    list(backfill_iter(conn, select_pending_probes(conn), commit_every=1, workers=4))
+    par_rows = conn.execute(
+        "SELECT source_tier, count(*) FROM weather GROUP BY source_tier ORDER BY source_tier"
+    ).fetchall()
+
+    assert seq_rows == par_rows
+
+
 def test_coverage_by_league_season_counts_matches_and_resolved(conn, monkeypatch):
     monkeypatch.setattr(backfill_mod, "resolve_event_anomaly", _fake_cascade_factory())
     list(backfill_iter(conn, select_pending_probes(conn), commit_every=1))

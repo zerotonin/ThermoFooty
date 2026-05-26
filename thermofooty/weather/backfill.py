@@ -229,6 +229,7 @@ def backfill_iter(
     probes: list[BackfillProbe],
     *,
     commit_every: int = 50,
+    workers: int = 1,
 ) -> Iterator[WeatherRow]:
     """Yield each resolved WeatherRow as the loop progresses.
 
@@ -236,13 +237,33 @@ def backfill_iter(
     or Ctrl-C only loses the last batch, not the entire pass.  The
     caller is responsible for attaching a progress bar around the
     yielded values.
+
+    When ``workers > 1`` the cascade calls run in a ThreadPoolExecutor
+    — each ``resolve_probe`` is pure (no SQLite, no shared mutation)
+    and I/O-bound (network roundtrips to meteostat / ERA5), so threads
+    parallelise cleanly.  The main thread still owns the SQLite
+    writes, sidestepping sqlite3's single-writer constraint.  Order
+    is preserved (we use ``executor.map``), so the progress bar's ETA
+    stays meaningful.
     """
-    for i, probe in enumerate(probes, start=1):
-        row = resolve_probe(probe)
-        insert_weather_row(conn, row)
-        if i % commit_every == 0:
-            conn.commit()
-        yield row
+    if workers <= 1:
+        for i, probe in enumerate(probes, start=1):
+            row = resolve_probe(probe)
+            insert_weather_row(conn, row)
+            if i % commit_every == 0:
+                conn.commit()
+            yield row
+        conn.commit()
+        return
+
+    from concurrent.futures import ThreadPoolExecutor
+
+    with ThreadPoolExecutor(max_workers=workers) as executor:
+        for i, row in enumerate(executor.map(resolve_probe, probes), start=1):
+            insert_weather_row(conn, row)
+            if i % commit_every == 0:
+                conn.commit()
+            yield row
     conn.commit()
 
 
