@@ -30,7 +30,6 @@ from datetime import date
 
 import pandas as pd
 
-
 # ─────────────────────────────────────────────────────────────────
 #  Result dataclasses
 # ─────────────────────────────────────────────────────────────────
@@ -180,6 +179,44 @@ def resolve(
 # ─────────────────────────────────────────────────────────────────
 
 
+#: Per-(tier, exception-type) deduplication for the resilience warnings
+#: below.  A single missing-data condition (e.g. HadCET files not on disk)
+#: would otherwise log 30,000 identical warnings during a backfill pass.
+_TIER_ERROR_LOGGED: set[tuple[str, str]] = set()
+
+
+def _try_tier(
+    tier_name: str,
+    fn,
+    *args,
+    **kwargs,
+):
+    """Call ``fn(*args, **kwargs)`` and return its AnomalyFetch, or None.
+
+    Catches any exception, logs it once per (tier, exception-type) pair
+    via ``warnings.warn``, and returns ``None`` so the cascade falls
+    through to the next tier.  Programming bugs in our own code surface
+    via the warning; transient upstream failures (network blips, missing
+    files, rate limits) degrade gracefully.
+    """
+    import warnings
+    try:
+        return fn(*args, **kwargs)
+    except Exception as exc:
+        key = (tier_name, type(exc).__name__)
+        if key not in _TIER_ERROR_LOGGED:
+            _TIER_ERROR_LOGGED.add(key)
+            warnings.warn(
+                f"weather cascade tier {tier_name!r} raised "
+                f"{type(exc).__name__}: {exc}.  This tier will be skipped "
+                f"for the remainder of the process; subsequent identical "
+                f"failures are silenced.",
+                RuntimeWarning,
+                stacklevel=2,
+            )
+        return None
+
+
 def resolve_event_anomaly(
     lat: float,
     lon: float,
@@ -199,6 +236,12 @@ def resolve_event_anomaly(
     Defaults reflect the OSF pre-registration:
     ``half_window_years=5`` (§ 3.4), ``event_buffer_days=7``,
     ``min_baseline_days=20``.
+
+    Resilience: each tier call is wrapped in a guard that downgrades any
+    raised exception to a one-shot warning + fall-through to the next
+    tier.  A missing HadCET data file, a rate-limited meteostat
+    request, or a CDS API outage no longer crashes a multi-hour backfill
+    pass partway through.
     """
     # ── Tier 1: meteostat ────────────────────────────────────────
     try:
@@ -207,14 +250,15 @@ def resolve_event_anomaly(
         meteostat_src = None  # type: ignore[assignment]
 
     if meteostat_src is not None:
-        r = meteostat_src.resolve_for_anomaly(
+        r = _try_tier(
+            "tier1_ghcn", meteostat_src.resolve_for_anomaly,
             lat, lon, when,
             half_window_years=half_window_years,
             event_buffer_days=event_buffer_days,
             min_baseline_days=min_baseline_days,
             radius_km=radius_km,
         )
-        if r.tmax_event_c is not None:
+        if r is not None and r.tmax_event_c is not None:
             return AnomalyFetch(
                 tmax_event_c=r.tmax_event_c,
                 baseline=r.baseline,
@@ -230,13 +274,14 @@ def resolve_event_anomaly(
         hadcet_src = None  # type: ignore[assignment]
 
     if hadcet_src is not None and hadcet_src.covers(lat, lon):
-        r = hadcet_src.resolve_for_anomaly(
+        r = _try_tier(
+            "tier2_hadcet", hadcet_src.resolve_for_anomaly,
             lat, lon, when,
             half_window_years=half_window_years,
             event_buffer_days=event_buffer_days,
             min_baseline_days=min_baseline_days,
         )
-        if r.tmax_event_c is not None:
+        if r is not None and r.tmax_event_c is not None:
             return AnomalyFetch(
                 tmax_event_c=r.tmax_event_c,
                 baseline=r.baseline,
@@ -252,13 +297,14 @@ def resolve_event_anomaly(
         era5_src = None  # type: ignore[assignment]
 
     if era5_src is not None and era5_src.covers(when):
-        r = era5_src.resolve_for_anomaly(
+        r = _try_tier(
+            "tier3_era5", era5_src.resolve_for_anomaly,
             lat, lon, when,
             half_window_years=half_window_years,
             event_buffer_days=event_buffer_days,
             min_baseline_days=min_baseline_days,
         )
-        if r.tmax_event_c is not None:
+        if r is not None and r.tmax_event_c is not None:
             return AnomalyFetch(
                 tmax_event_c=r.tmax_event_c,
                 baseline=r.baseline,
@@ -274,13 +320,14 @@ def resolve_event_anomaly(
         twentycr_src = None  # type: ignore[assignment]
 
     if twentycr_src is not None and twentycr_src.covers(when):
-        r = twentycr_src.resolve_for_anomaly(
+        r = _try_tier(
+            "tier4_20crv3", twentycr_src.resolve_for_anomaly,
             lat, lon, when,
             half_window_years=half_window_years,
             event_buffer_days=event_buffer_days,
             min_baseline_days=min_baseline_days,
         )
-        if r.tmax_event_c is not None:
+        if r is not None and r.tmax_event_c is not None:
             return AnomalyFetch(
                 tmax_event_c=r.tmax_event_c,
                 baseline=r.baseline,

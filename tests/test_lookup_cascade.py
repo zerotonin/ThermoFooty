@@ -18,7 +18,6 @@ import pytest
 
 from thermofooty import lookup
 
-
 # ─────────────────────────────────────────────────────────────────
 #  Fixture helpers  « pretend AnomalyFetch from a single tier »
 # ─────────────────────────────────────────────────────────────────
@@ -160,6 +159,67 @@ def test_cascade_skips_era5_for_pre_1981(monkeypatch):
     assert result.tmax_event_c == 18.3
     assert result.provenance == "tier4_20crv3"
     assert not era5_called, "ERA5 must be skipped pre-1981 by covers()"
+
+
+def test_cascade_survives_raising_tier_and_falls_through(monkeypatch):
+    """Phase 4 resilience: if a tier RAISES (HadCET files missing,
+    meteostat 429, ERA5 cdsapi outage), the cascade must catch the
+    exception, log it once, and continue to the next tier — not crash
+    the multi-hour backfill loop.
+    """
+    from thermofooty.weather import era5_src, hadcet_src, meteostat_src
+
+    # Reset the per-process dedupe set so this test stands alone
+    lookup._TIER_ERROR_LOGGED.clear()
+
+    monkeypatch.setattr(
+        meteostat_src, "resolve_for_anomaly",
+        lambda *a, **k: _StubFetch(None, pd.DataFrame(columns=["tmax"]), ""),
+    )
+    # HadCET raises a FileNotFoundError — the exact symptom from Bart's run
+    def hadcet_raises(*a, **k):
+        raise FileNotFoundError("HadCET maxtemp_daily_totals.txt missing")
+    monkeypatch.setattr(hadcet_src, "resolve_for_anomaly", hadcet_raises)
+    monkeypatch.setattr(
+        era5_src, "resolve_for_anomaly",
+        lambda *a, **k: _StubFetch(
+            tmax_event_c=22.4, baseline=_fake_baseline(40),
+            station_id="ERA5_+53.50_-002.25",
+            provenance="tier3_era5",
+            note="ERA5 fallback after tier 2 crash",
+        ),
+    )
+
+    with pytest.warns(RuntimeWarning, match="tier2_hadcet"):
+        result = lookup.resolve_event_anomaly(53.46, -2.29, date(2018, 6, 14))
+    assert result.tmax_event_c == 22.4
+    assert result.provenance == "tier3_era5"
+
+
+def test_cascade_warns_at_most_once_per_tier_per_exception(monkeypatch):
+    """The per-(tier, exception-type) dedupe must hold — a backfill of
+    37,000 probes can't emit 37,000 identical warnings just because
+    HadCET is offline.
+    """
+    from thermofooty.weather import hadcet_src, meteostat_src
+
+    lookup._TIER_ERROR_LOGGED.clear()
+
+    monkeypatch.setattr(
+        meteostat_src, "resolve_for_anomaly",
+        lambda *a, **k: _StubFetch(None, pd.DataFrame(columns=["tmax"]), ""),
+    )
+    monkeypatch.setattr(
+        hadcet_src, "resolve_for_anomaly",
+        lambda *a, **k: (_ for _ in ()).throw(FileNotFoundError("missing")),
+    )
+
+    with pytest.warns(RuntimeWarning) as records:
+        for _ in range(5):
+            lookup.resolve_event_anomaly(53.46, -2.29, date(2018, 6, 14))
+    # Exactly one RuntimeWarning emitted across 5 calls
+    cascade_warnings = [r for r in records if "tier2_hadcet" in str(r.message)]
+    assert len(cascade_warnings) == 1
 
 
 def test_cascade_returns_empty_when_all_tiers_decline(monkeypatch):
