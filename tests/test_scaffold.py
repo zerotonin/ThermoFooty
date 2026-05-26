@@ -123,7 +123,10 @@ def test_schema_ddl_applies_to_in_memory_sqlite():
     conn = sqlite3.connect(":memory:")
     try:
         conn.execute("PRAGMA foreign_keys = ON")
-        sql = config.SCHEMA_SQL_PATH.read_text()
+        # Explicit UTF-8: the DDL carries box-drawing characters in
+        # its banner comments and Windows defaults Path.read_text to
+        # cp1252 which can't decode them.
+        sql = config.SCHEMA_SQL_PATH.read_text(encoding="utf-8")
         conn.executescript(sql)
         conn.commit()
     finally:
@@ -136,7 +139,7 @@ def test_lineups_table_is_per_player_per_match():
     constraint encodes that invariant so future schema edits don't
     accidentally drop it.
     """
-    sql = config.SCHEMA_SQL_PATH.read_text().lower()
+    sql = config.SCHEMA_SQL_PATH.read_text(encoding="utf-8").lower()
     assert "create table if not exists lineups" in sql
     assert "unique (match_id, player_id)" in sql
 
