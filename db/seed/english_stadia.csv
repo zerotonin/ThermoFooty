@@ -1,0 +1,93 @@
+stadium_name,city,latitude,longitude,altitude_m,has_roof,nearest_icao,nearest_icao_distance_km,notes
+Anfield,Liverpool,53.4308,-2.9608,57,0,EGGP,9.5,Liverpool FC (all EPL seasons)
+Old Trafford,Manchester,53.4631,-2.2913,38,0,EGCC,11.0,Manchester United FC (all EPL seasons)
+Stamford Bridge,London,51.4817,-0.1909,11,0,EGLC,16.0,Chelsea FC (all EPL seasons)
+Etihad Stadium,Manchester,53.4831,-2.2004,40,0,EGCC,12.0,Manchester City FC (2003-04+)
+Maine Road,Manchester,53.4524,-2.2308,55,0,EGCC,12.5,Manchester City FC (pre-2003)
+Emirates Stadium,London,51.5549,-0.1084,33,0,EGLC,12.0,Arsenal FC (2006-07+)
+Highbury,London,51.5586,-0.1019,32,0,EGLC,12.5,Arsenal FC (pre-2006)
+Tottenham Hotspur Stadium,London,51.6043,-0.0668,55,0,EGLC,13.0,Tottenham Hotspur (2019-20+)
+White Hart Lane,London,51.6033,-0.0660,55,0,EGLC,13.0,Tottenham Hotspur (pre-2017)
+Wembley Stadium,London,51.5560,-0.2796,49,0,EGLL,16.0,Tottenham temp 2017-18 and 2018-19; FA Cup finals; some England matches
+St James' Park,Newcastle,54.9756,-1.6217,42,0,EGNT,9.5,Newcastle United FC (all EPL seasons)
+Goodison Park,Liverpool,53.4388,-2.9663,18,0,EGGP,10.5,Everton FC (all EPL seasons)
+Villa Park,Birmingham,52.5092,-1.8848,108,0,EGBB,13.5,Aston Villa FC (all EPL seasons)
+Selhurst Park,London,51.3983,-0.0856,69,0,EGLL,18.0,Crystal Palace FC (all EPL seasons)
+St Mary's Stadium,Southampton,50.9058,-1.3911,15,0,EGHI,5.5,Southampton FC (2001-02+)
+The Dell,Southampton,50.9082,-1.4117,17,0,EGHI,7.0,Southampton FC (pre-2001)
+Stadium of Light,Sunderland,54.9144,-1.3882,15,0,EGNT,18.0,Sunderland AFC (1997-98+)
+Roker Park,Sunderland,54.9111,-1.3692,12,0,EGNT,19.5,Sunderland AFC (pre-1997)
+King Power Stadium,Leicester,52.6204,-1.1422,76,0,EGBN,2.5,Leicester City FC (2002-03+)
+Filbert Street,Leicester,52.6233,-1.1392,75,0,EGBN,2.5,Leicester City FC (pre-2002)
+Pride Park,Derby,52.9145,-1.4470,46,0,EGNX,15.5,Derby County (1997-98+)
+Baseball Ground,Derby,52.9072,-1.4625,45,0,EGNX,16.0,Derby County (pre-1997)
+Riverside Stadium,Middlesbrough,54.5784,-1.2169,8,0,EGNT,55.0,Middlesbrough FC (1995-96+)
+Ayresome Park,Middlesbrough,54.5697,-1.2333,12,0,EGNT,56.0,Middlesbrough FC (pre-1995)
+The Hawthorns,West Bromwich,52.5089,-1.9639,168,0,EGBB,11.0,West Bromwich Albion FC
+Loftus Road,London,51.5095,-0.2326,30,0,EGLL,14.5,Queens Park Rangers FC
+Carrow Road,Norwich,52.6221,1.3091,3,0,EGSH,5.5,Norwich City FC
+Vitality Stadium,Bournemouth,50.7352,-1.8385,10,0,EGHH,6.0,AFC Bournemouth (formerly Dean Court)
+Amex Stadium,Brighton,50.8617,-0.0837,40,0,EGKB,40.0,Brighton & Hove Albion (2011-12+)
+Britannia Stadium,Stoke-on-Trent,52.9883,-2.1755,90,0,EGCC,55.0,Stoke City FC (now bet365 Stadium; 1997-98+)
+Madejski Stadium,Reading,51.4220,-0.9826,46,0,EGLL,40.0,Reading FC (1998-99+)
+City Ground,Nottingham,52.9399,-1.1330,30,0,EGNX,30.0,Nottingham Forest FC
+Bramall Lane,Sheffield,53.3704,-1.4709,87,0,EGNX,55.0,Sheffield United FC
+Hillsborough,Sheffield,53.4115,-1.5061,80,0,EGNX,55.0,Sheffield Wednesday FC
+Elland Road,Leeds,53.7778,-1.5722,52,0,EGNM,18.0,Leeds United FC
+DW Stadium,Wigan,53.5470,-2.6541,32,0,EGGP,25.0,Wigan Athletic (2005-13)
+Reebok Stadium,Bolton,53.5803,-2.5358,75,0,EGCC,15.0,Bolton Wanderers (1997-98+; now Toughsheet)
+Burnden Park,Bolton,53.5749,-2.4131,80,0,EGCC,18.0,Bolton Wanderers (pre-1997)
+Kirklees Stadium,Huddersfield,53.6541,-1.7681,75,0,EGNM,32.0,Huddersfield Town (John Smith's Stadium)
+Liberty Stadium,Swansea,51.6423,-3.9347,3,0,EGFF,9.0,Swansea City (2011-18; now Swansea.com Stadium)
+Cardiff City Stadium,Cardiff,51.4727,-3.2031,12,0,EGFF,15.0,Cardiff City FC (2009+)
+Vicarage Road,Watford,51.6499,-0.4014,72,0,EGLL,15.0,Watford FC
+Molineux Stadium,Wolverhampton,52.5904,-2.1303,105,0,EGBB,20.0,Wolverhampton Wanderers
+Brentford Community Stadium,London,51.4910,-0.2885,8,0,EGLL,8.0,Brentford FC (2020-21+)
+Griffin Park,London,51.4881,-0.3024,9,0,EGLL,8.5,Brentford FC (pre-2020)
+Bramley-Moore Dock,Liverpool,53.4179,-3.0070,4,0,EGGP,9.0,Everton FC new ground (2025-26+)
+Turf Moor,Burnley,53.7892,-2.2300,140,0,EGCC,32.0,Burnley FC
+Portman Road,Ipswich,52.0552,1.1453,8,0,EGSH,55.0,Ipswich Town FC
+KC Stadium,Hull,53.7460,-0.3676,5,0,EGNJ,25.0,Hull City (now MKM Stadium; 2002+)
+Ewood Park,Blackburn,53.7286,-2.4892,123,0,EGCC,20.0,Blackburn Rovers FC
+Ashton Gate,Bristol,51.4400,-2.6203,12,0,EGGD,9.0,Bristol City FC
+CBS Arena,Coventry,52.4480,-1.4951,87,0,EGBE,5.0,Coventry City FC (Coventry Building Society Arena; formerly Ricoh Arena 2005+)
+Highfield Road,Coventry,52.4080,-1.4880,90,0,EGBE,5.5,Coventry City FC (pre-2005; demolished 2005)
+Kenilworth Road,Luton,51.8842,-0.4317,113,0,EGGW,5.5,Luton Town FC
+The Den,London,51.4855,-0.0508,8,0,EGLC,8.0,Millwall FC
+Kassam Stadium,Oxford,51.7164,-1.2086,80,0,EGTK,15.0,Oxford United FC
+Home Park,Plymouth,50.3884,-4.1506,30,0,EGDR,15.0,Plymouth Argyle FC
+Fratton Park,Portsmouth,50.7964,-1.0639,8,0,EGHI,25.0,Portsmouth FC
+Deepdale,Preston,53.7724,-2.6885,30,0,EGNH,30.0,Preston North End FC
+Oakwell,Barnsley,53.5524,-1.4677,90,0,EGNM,32.0,Barnsley FC
+St Andrew's,Birmingham,52.4756,-1.8683,135,0,EGBB,7.0,Birmingham City FC
+Bloomfield Road,Blackpool,53.8047,-3.0481,8,0,EGNH,11.0,Blackpool FC
+Memorial Stadium,Bristol,51.4863,-2.5832,15,0,EGGD,11.0,Bristol Rovers FC
+Pirelli Stadium,Burton upon Trent,52.8217,-1.6263,55,0,EGBE,30.0,Burton Albion FC
+Abbey Stadium,Cambridge,52.2122,0.1546,7,0,EGSC,4.0,Cambridge United FC
+The Valley,London,51.4865,0.0364,8,0,EGLC,10.0,Charlton Athletic FC
+Broadfield Stadium,Crawley,51.0989,-0.1947,80,0,EGKB,8.0,Crawley Town FC
+Gresty Road,Crewe,53.0884,-2.4344,46,0,EGCC,32.0,Crewe Alexandra FC (Mornflake Stadium)
+Eco-Power Stadium,Doncaster,53.5102,-1.1135,5,0,EGCN,3.0,Doncaster Rovers FC (formerly Keepmoat Stadium)
+St James Park (Exeter),Exeter,50.7307,-3.5210,10,0,EGTE,5.0,Exeter City FC (not Newcastle's ground)
+Brisbane Road,London,51.5602,-0.0124,15,0,EGLC,9.0,Leyton Orient FC (Matchroom Stadium)
+LNER Stadium,Lincoln,53.2185,-0.5402,15,0,EGNX,55.0,Lincoln City FC (Sincil Bank)
+One Call Stadium,Mansfield,53.1378,-1.2008,108,0,EGNX,25.0,Mansfield Town FC (Field Mill)
+Sixfields Stadium,Northampton,52.2350,-0.9342,60,0,EGTK,30.0,Northampton Town FC
+Weston Homes Stadium,Peterborough,52.5654,-0.2406,8,0,EGSS,40.0,Peterborough United FC (London Road)
+AESSEAL New York Stadium,Rotherham,53.4274,-1.3624,32,0,EGNX,35.0,Rotherham United FC
+Croud Meadow,Shrewsbury,52.6883,-2.7491,55,0,EGBB,55.0,Shrewsbury Town FC (Greenhous Meadow)
+Lamex Stadium,Stevenage,51.8896,-0.1929,75,0,EGGW,15.0,Stevenage FC (Broadhall Way)
+SToK Cae Ras,Wrexham,53.0510,-3.0046,40,0,EGCC,55.0,Wrexham AFC (Racecourse Ground)
+Adams Park,High Wycombe,51.6306,-0.8004,75,0,EGLL,25.0,Wycombe Wanderers FC
+Craven Cottage,London,51.4748,-0.2216,5,0,EGLL,13.0,Fulham FC
+Meadow Lane,Nottingham,52.9425,-1.1370,29,0,EGNX,32.0,Notts County FC
+Vale Park,Burslem,53.0498,-2.1900,165,0,EGCC,40.0,Port Vale FC
+Stadium MK,Milton Keynes,52.0090,-0.7335,90,0,EGTK,25.0,MK Dons (Milton Keynes Dons FC)
+Plough Lane,London,51.4316,-0.1888,30,0,EGLL,17.0,AFC Wimbledon (rebuilt 2020+)
+Prenton Park,Birkenhead,53.3735,-3.0327,15,0,EGGP,4.0,Tranmere Rovers FC
+Valley Parade,Bradford,53.8043,-1.7593,90,0,EGNM,15.0,Bradford City AFC
+Bescot Stadium,Walsall,52.5658,-1.9908,115,0,EGBB,8.0,Walsall FC (Poundland Bescot Stadium)
+Whaddon Road,Cheltenham,51.9090,-2.0606,75,0,EGBJ,11.0,Cheltenham Town FC (Completely-Suzuki Stadium)
+Mazuma Stadium,Morecambe,54.0681,-2.8625,5,0,EGNH,30.0,Morecambe FC (Globe Arena)
+Brunton Park,Carlisle,54.8954,-2.9134,18,0,EGNC,3.0,Carlisle United FC
+The New Lawn,Nailsworth,51.6913,-2.2226,150,0,EGBJ,25.0,Forest Green Rovers FC (now relegated to National League)
