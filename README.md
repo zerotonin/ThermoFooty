@@ -14,8 +14,8 @@
 
 > **Status:** scaffold (v0.1.0-dev0). Pre-registration is locked at
 > OSF; data ingestion and analysis pipelines are under construction
-> per the dev plan at `~/PyProjects/ThermoFooty_DEV_PLAN.md`. The
-> Zenodo DOI badge above will be minted at the first tagged release.
+> per the project dev plan (lab-internal). The Zenodo DOI badge
+> above will be minted at the first tagged release.
 
 **Does on-pitch player aggression rise with the day-of-match
 temperature anomaly at the stadium, and does the same heat signal
@@ -82,9 +82,9 @@ v0.1.1, and every statistical estimator routes through
 | | H7 / H7c | Hot-vs-cool host World Cups (Qatar excluded; Qatar as own descriptive category). |
 | | H8 / H_omnibus | Tournament-family / tournament-edition heterogeneity LRTs. |
 
-Full specifications in the OSF pre-registration and in the lab's
-internal markdown at
-`~/ObsidianVault/GeurtenLab/Projects/HeatAggressionDrosophila/human_aggression/preregistration_thermofooty.md`.
+Full specifications are locked in the OSF pre-registration
+([10.17605/OSF.IO/YZVAK](https://doi.org/10.17605/OSF.IO/YZVAK));
+the lab's internal source draft is mirrored there verbatim.
 
 ## Repository layout
 
@@ -95,7 +95,7 @@ ThermoFooty/
 ├── environment.yml
 ├── LICENSE                          ← MIT
 ├── README.md
-├── data → /media/geuba03p/DATADRIVE1/ThermoFooty   ← symlink (gitignored)
+├── data → $THERMOFOOTY_DATA_ROOT             ← symlink (gitignored)
 ├── db/
 │   ├── schema.sql                   ← committed canonical DDL
 │   └── migrations/                  ← alembic-lite NNNN_<slug>.sql
@@ -116,44 +116,90 @@ ThermoFooty/
 └── .github/workflows/               ← tests + docs + release + network-tests
 ```
 
-## Data layout (on DATADRIVE1)
+## Data layout
 
-All data lives off-repo on the NVMe at `/media/geuba03p/DATADRIVE1/ThermoFooty/`,
-exposed via the gitignored `data/` symlink. Override with the
-`THERMOFOOTY_DATA_ROOT` env var on a different machine.
+All data lives off-repo under `$THERMOFOOTY_DATA_ROOT/`, exposed via
+the gitignored `data/` symlink. Set the env var to wherever your fast
+storage lives (an external NVMe, a network mount, the HPC scratch
+directory, …).
+
+Each entry is tagged with the data family it belongs to:
+**[db]** canonical store · **[match]** football events + lineups ·
+**[crowd]** crowd-violence reports · **[stadium]** geometry +
+metadata · **[weather]** temperature sources · **[derived]**
+materialised analysis tables · **[ops]** logs & housekeeping.
 
 ```
 $THERMOFOOTY_DATA_ROOT/
 ├── db/
-│   └── thermofooty.sqlite           ← canonical SQLite (built from db/schema.sql)
+│   └── thermofooty.sqlite           ← [db]      canonical SQLite (built from db/schema.sql)
 ├── raw/
-│   ├── football_data_uk/            ← season-per-CSV downloads
-│   ├── fbref_html/                  ← scraped match-report HTML cache
-│   ├── home_office_pdfs/            ← UK arrests bulletins
-│   ├── zis_jahresberichte/          ← Bundespolizei annual reports
-│   ├── stadia/                      ← coordinate CSVs, lineup overrides
-│   └── observatories/hadcet/        ← HadCET daily totals files
+│   ├── football_data_uk/            ← [match]   season-per-CSV downloads
+│   ├── fbref_html/                  ← [match]   scraped match-report HTML cache
+│   ├── home_office_pdfs/            ← [crowd]   UK arrests bulletins
+│   ├── zis_jahresberichte/          ← [crowd]   Bundespolizei annual reports
+│   ├── stadia/                      ← [stadium] coordinate CSVs, lineup overrides
+│   └── observatories/hadcet/        ← [weather] HadCET daily totals files
 ├── cache/
-│   ├── meteostat/                   ← parquet per (station, year-month)
-│   ├── era5/                        ← parquet per (cell, year-month)
-│   ├── twentycr/                    ← parquet per (cell, year)
-│   └── fbref_parsed/                ← parsed JSON per match (dedupe key)
+│   ├── meteostat/                   ← [weather] parquet per (station, year-month)
+│   ├── era5/                        ← [weather] parquet per (cell, year-month)
+│   ├── twentycr/                    ← [weather] parquet per (cell, year)
+│   └── fbref_parsed/                ← [match]   parsed JSON per match (dedupe key)
 ├── derived/
-│   └── analysis_panel.parquet       ← materialised join per ingestion pass
-└── logs/                            ← ingestion + analysis logs
+│   └── analysis_panel.parquet       ← [derived] materialised join per ingestion pass
+└── logs/                            ← [ops]     ingestion + analysis logs
 ```
 
 ## Installation
+
+Two supported routes — pick one. The conda route is the reproducible
+default; the pip route is lighter if you already have a Python ≥ 3.11
+on `$PATH`.
+
+### Conda env (recommended)
+
+`environment.yml` pins Python 3.11 + every dependency the cascade,
+ingestion, and inference layers need, plus `rerandomstats` from the
+locked v0.2.0 tag. One command bootstraps the whole stack:
+
+```bash
+git clone https://github.com/zerotonin/ThermoFooty.git
+cd ThermoFooty
+
+conda env create -f environment.yml      # creates the `thermofooty` env
+conda activate thermofooty
+pip install -e . --no-deps               # adds ThermoFooty itself in editable mode
+
+# Point `data/` at wherever your fast storage lives.
+export THERMOFOOTY_DATA_ROOT=/path/to/your/ThermoFooty
+ln -sf "$THERMOFOOTY_DATA_ROOT" data
+```
+
+To refresh after a dependency bump: `conda env update -f environment.yml --prune`.
+
+### Pip only (lighter)
 
 ```bash
 git clone https://github.com/zerotonin/ThermoFooty.git
 cd ThermoFooty
 pip install -e ".[all]"
 
-# Re-point `data/` at your data root (defaults to DATADRIVE1; override if needed).
-export THERMOFOOTY_DATA_ROOT=/media/geuba03p/DATADRIVE1/ThermoFooty
+# Point `data/` at wherever your fast storage lives.
+export THERMOFOOTY_DATA_ROOT=/path/to/your/ThermoFooty
 ln -sf "$THERMOFOOTY_DATA_ROOT" data
 ```
+
+Prefer not to rely on the env var being exported in every shell?
+Copy the committed template and fill it in — `local_paths.json` is
+gitignored so absolute paths never leak into a commit:
+
+```bash
+cp local_paths.template.json local_paths.json
+# edit local_paths.json -> set data_root to your absolute path
+```
+
+Resolution order, first hit wins: env var → `local_paths.json` →
+in-repo `data/` symlink.
 
 Python ≥ 3.11 required (meteostat 2.x dropped 3.10). For the ERA5
 fallback tier you additionally need a free

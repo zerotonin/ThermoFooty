@@ -3,10 +3,10 @@
 # ║  « single source of truth for data-root + ingestion settings »   ║
 # ╠══════════════════════════════════════════════════════════════════╣
 # ║  All paths below derive from THERMOFOOTY_DATA_ROOT (env var) so  ║
-# ║  the same codebase runs on Bart's workstation (DATADRIVE1),      ║
-# ║  Aoraki HPC, or a collaborator's machine.  Default falls back    ║
-# ║  to the in-repo ``data/`` symlink (which on Bart's box points    ║
-# ║  at /media/geuba03p/DATADRIVE1/ThermoFooty).                     ║
+# ║  the same codebase runs on a workstation NVMe, an HPC scratch    ║
+# ║  mount, or a collaborator's laptop.  Default falls back to the   ║
+# ║  in-repo ``data/`` symlink, which each developer points at       ║
+# ║  whatever fast storage their box exposes.                        ║
 # ║                                                                  ║
 # ║  Mounting policy: import-time check ensures the data root        ║
 # ║  exists and is writeable.  Loud failure beats silent fall-back   ║
@@ -16,6 +16,7 @@
 
 from __future__ import annotations
 
+import json
 import os
 from pathlib import Path
 
@@ -25,11 +26,32 @@ from pathlib import Path
 
 REPO_ROOT: Path = Path(__file__).resolve().parent.parent
 
-#: Default data root, resolved at import time.  Override with the
-#: ``THERMOFOOTY_DATA_ROOT`` environment variable on machines where
-#: DATADRIVE1 isn't mounted.
+#: Optional machine-local override file.  Gitignored so machine-specific
+#: absolute paths never land in the public repo; ``local_paths.template.json``
+#: is the committed scaffold a new developer copies and fills in.
+LOCAL_PATHS_FILE: Path = REPO_ROOT / "local_paths.json"
+
+
+def _read_local_data_root() -> str | None:
+    """Return ``data_root`` from local_paths.json if the file exists and is valid."""
+    if not LOCAL_PATHS_FILE.exists():
+        return None
+    try:
+        payload = json.loads(LOCAL_PATHS_FILE.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    value = payload.get("data_root")
+    return value if isinstance(value, str) and value.strip() else None
+
+
+#: Resolution order (first hit wins):
+#:   1. ``THERMOFOOTY_DATA_ROOT`` environment variable
+#:   2. ``data_root`` from ``local_paths.json`` (gitignored, per-machine)
+#:   3. In-repo ``data/`` symlink fallback
 DATA_ROOT: Path = Path(
-    os.environ.get("THERMOFOOTY_DATA_ROOT", REPO_ROOT / "data")
+    os.environ.get("THERMOFOOTY_DATA_ROOT")
+    or _read_local_data_root()
+    or REPO_ROOT / "data"
 ).resolve()
 
 # ─────────────────────────────────────────────────────────────────
@@ -76,16 +98,16 @@ def assert_data_root_ready() -> None:
 
     Call this from any CLI entry point that touches data.  Cheap to
     run repeatedly.  Raises a precise ``RuntimeError`` if the mount
-    is missing — the typical cause is DATADRIVE1 not mounted at boot.
+    is missing — the typical cause is the external data volume not
+    being mounted at boot.
     """
     if not DATA_ROOT.exists():
         raise RuntimeError(
-            f"THERMOFOOTY_DATA_ROOT = {DATA_ROOT} does not exist. "
-            f"On Bart's workstation this usually means /media/geuba03p/"
-            f"DATADRIVE1 is not mounted (check `mount | grep DATADRIVE1`). "
-            f"On other machines, set THERMOFOOTY_DATA_ROOT to a writeable "
-            f"path with the expected sub-directory layout (see README "
-            f"'Data layout (on DATADRIVE1)' for the full tree)."
+            f"Resolved data root {DATA_ROOT} does not exist.  Either "
+            f"set THERMOFOOTY_DATA_ROOT in the environment, or copy "
+            f"local_paths.template.json -> local_paths.json and fill "
+            f"in the data_root field.  Expected sub-directory layout "
+            f"is documented in README.md -> Data layout."
         )
     if not os.access(DATA_ROOT, os.W_OK):
         raise RuntimeError(

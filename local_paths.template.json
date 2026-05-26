@@ -1,0 +1,17 @@
+{
+  "_comment": [
+    "ThermoFooty local-path overrides — copy this file to `local_paths.json`",
+    "(gitignored) and fill in the absolute paths your machine actually uses.",
+    "The real `local_paths.json` is gitignored so no machine-specific path",
+    "ever lands in a public repo.",
+    "",
+    "Resolution order (first hit wins):",
+    "  1. THERMOFOOTY_DATA_ROOT environment variable",
+    "  2. `data_root` field in local_paths.json",
+    "  3. In-repo `data/` symlink",
+    "",
+    "Only `data_root` is required; everything under it follows the layout",
+    "documented in README.md → Data layout."
+  ],
+  "data_root": "<absolute path to your ThermoFooty data root, e.g. /mnt/external/ThermoFooty>"
+}

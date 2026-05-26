@@ -3,7 +3,7 @@
 ThermoFooty is a staged pipeline. As of v0.1.0-dev0 the repo is a
 scaffold — only Phase 1 (this document, the SQLite schema, the
 package skeleton) is implemented. Subsequent phases land per the
-dev plan at `~/PyProjects/ThermoFooty_DEV_PLAN.md`.
+lab-internal project dev plan.
 
 ## Stage 1 — Match data ingestion
 

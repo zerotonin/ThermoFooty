@@ -1,21 +1,21 @@
 # ╔══════════════════════════════════════════════════════════════════╗
 # ║  ThermoFooty — .gitignore                                        ║
-# ║  « data is large and lives on DATADRIVE1; never commit it »      ║
+# ║  « data is large and lives on the external data root; never commit it »      ║
 # ╚══════════════════════════════════════════════════════════════════╝
 
-# ── Data (entire `data/` is a symlink to DATADRIVE1; never commit) ──
+# ── Data (entire `data/` is a symlink to the external data root; never commit) ──
 # The symlink itself stays untracked too — re-create it per machine
 # via `ln -sf $THERMOFOOTY_DATA_ROOT data`.
 data
 data/
 
-# ── SQLite databases (live under data/db on DATADRIVE1, but guard) ──
+# ── SQLite databases (live under data/db on the external data root, but guard) ──
 *.sqlite
 *.sqlite-journal
 *.sqlite-wal
 *.sqlite-shm
 
-# ── Parquet / arrow caches (live under data/cache on DATADRIVE1) ────
+# ── Parquet / arrow caches (live under data/cache on the external data root) ────
 *.parquet
 *.arrow
 *.feather
@@ -78,3 +78,8 @@ Thumbs.db
 *.key
 .env.local
 secrets.yaml
+
+# ── Machine-local overrides ─────────────────────────────────────────
+# Real local_paths.json carries absolute paths; only the template is
+# committed.  Never commit the real one — it would leak machine layout.
+local_paths.json

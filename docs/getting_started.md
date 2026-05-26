@@ -12,10 +12,9 @@ Python ≥ 3.11 required (meteostat 2.x dropped 3.10 support).
 
 ## Data root
 
-ThermoFooty keeps the entire data tree off-repo on a fast NVMe.
-On Bart's workstation that's `/media/geuba03p/DATADRIVE1/ThermoFooty/`,
-exposed through the gitignored `data/` symlink. On any other machine,
-set `THERMOFOOTY_DATA_ROOT` before running the code:
+ThermoFooty keeps the entire data tree off-repo on fast storage,
+exposed through the gitignored `data/` symlink. Set
+`THERMOFOOTY_DATA_ROOT` before running the code:
 
 ```bash
 export THERMOFOOTY_DATA_ROOT=/path/to/your/data/root
@@ -45,6 +44,5 @@ pytest -m network        # opt-in: hits live upstreams (long)
 
 ## Next steps
 
-The runnable pipeline lands in Phases 2–5 of the dev plan
-(`~/PyProjects/ThermoFooty_DEV_PLAN.md`). See {doc}`pipeline` for
-the staged build-out.
+The runnable pipeline lands in Phases 2–5 of the lab-internal
+project dev plan. See {doc}`pipeline` for the staged build-out.
