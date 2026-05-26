@@ -94,9 +94,9 @@ def test_repo_root_contains_pyproject():
 
 
 def test_data_root_resolves():
-    """DATA_ROOT must resolve to something — either DATADRIVE1 or
-    the in-repo `data/` symlink fallback.  Don't assert it exists
-    here because CI runners won't have DATADRIVE1; that check
+    """DATA_ROOT must resolve to something — env var, local_paths.json,
+    or the in-repo `data/` symlink fallback.  Don't assert it exists
+    here because CI runners won't have a real data root; that check
     belongs in assert_data_root_ready() called by the CLI scripts.
     """
     assert config.DATA_ROOT is not None
@@ -107,6 +107,41 @@ def test_schema_sql_path_resolves_in_repo():
     assert config.SCHEMA_SQL_PATH.exists(), (
         f"db/schema.sql not found at {config.SCHEMA_SQL_PATH}"
     )
+
+
+def test_local_paths_template_is_committed_and_real_file_is_not():
+    """The template ships with the repo; the actual local_paths.json
+    must stay gitignored so machine-specific absolute paths never
+    leak into a public commit.
+    """
+    template = config.REPO_ROOT / "local_paths.template.json"
+    assert template.exists(), (
+        "local_paths.template.json is missing — new developers need it "
+        "to bootstrap their data root."
+    )
+    # Sanity: template is valid JSON and exposes data_root
+    import json as _json
+    payload = _json.loads(template.read_text(encoding="utf-8"))
+    assert "data_root" in payload
+
+
+def test_local_paths_json_overrides_when_env_unset(monkeypatch, tmp_path):
+    """When THERMOFOOTY_DATA_ROOT is unset, _read_local_data_root() must
+    pick up the data_root field from a local_paths.json sibling to the
+    repo root.  Guards against silent regressions in resolution order.
+    """
+    import importlib
+
+    fake_root = tmp_path / "fake_data"
+    fake_root.mkdir()
+    monkeypatch.delenv("THERMOFOOTY_DATA_ROOT", raising=False)
+    # Point LOCAL_PATHS_FILE at a temp file via attribute patch
+    fake_local = tmp_path / "local_paths.json"
+    fake_local.write_text(
+        f'{{"data_root": "{fake_root.as_posix()}"}}', encoding="utf-8",
+    )
+    monkeypatch.setattr(config, "LOCAL_PATHS_FILE", fake_local)
+    assert config._read_local_data_root() == fake_root.as_posix()
 
 
 # ─────────────────────────────────────────────────────────────────
@@ -162,10 +197,29 @@ def test_pragma_foreign_keys_enforced():
 # ─────────────────────────────────────────────────────────────────
 
 
-def test_lookup_stub_raises_with_phase_message():
-    from thermofooty.lookup import resolve_event_anomaly
-    with pytest.raises(NotImplementedError, match="Phase-2"):
-        resolve_event_anomaly()
+def test_lookup_exposes_cascade_api():
+    """Phase 2a wired the cascade onto thermofooty.weather; the lookup
+    module must surface the resolver functions and result dataclasses
+    that ingestion + inference call into.
+    """
+    from thermofooty import lookup
+    assert hasattr(lookup, "resolve_event_anomaly")
+    assert hasattr(lookup, "fetch_same_source_day")
+    assert hasattr(lookup, "AnomalyFetch")
+    assert hasattr(lookup, "Resolution")
+
+
+def test_anomaly_fetch_empty_is_unverifiable():
+    """``AnomalyFetch.empty()`` is what the cascade returns when every
+    tier declines, so it must carry the ``unverifiable`` provenance
+    flag the analysis layer keys on.
+    """
+    from thermofooty.lookup import AnomalyFetch
+    empty = AnomalyFetch.empty(note="all tiers declined")
+    assert empty.tmax_event_c is None
+    assert empty.provenance == "unverifiable"
+    assert empty.baseline.empty
+    assert list(empty.baseline.columns) == ["tmax"]
 
 
 def test_panel_stub_raises_with_phase_message():
