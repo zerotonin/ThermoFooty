@@ -9,5 +9,7 @@ the sync source and date so it remains traceable.
 The cascade was developed and validated on the ThermoStrife
 historical-uprisings panel (Geurten 2026, DOI 10.5281/zenodo.20371612)
 on a non-overlapping panel of events.  Cache paths re-root via
-``thermofooty.config.CACHE_*`` so caches land on DATADRIVE1.
+``thermofooty.config.CACHE_*`` so all per-source caches land on the
+developer-configured data root (see ``local_paths.template.json``
+for the machine-local override mechanism).
 """
