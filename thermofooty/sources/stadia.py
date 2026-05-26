@@ -63,9 +63,7 @@ def _season_in_range(season: str, first: str, last: str | None) -> bool:
     s = _season_start_year(season)
     if s < _season_start_year(first):
         return False
-    if last is not None and s > _season_start_year(last):
-        return False
-    return True
+    return not (last is not None and s > _season_start_year(last))
 
 
 # ─────────────────────────────────────────────────────────────────

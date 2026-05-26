@@ -28,7 +28,6 @@ from rich.table import Table
 
 from thermofooty.lookup import resolve_event_anomaly
 
-
 # ─────────────────────────────────────────────────────────────────
 #  Probe set  « one event per tier, plus one designed to miss »
 # ─────────────────────────────────────────────────────────────────

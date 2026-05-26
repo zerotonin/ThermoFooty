@@ -9,7 +9,6 @@ hits one real season for the weekly cron.
 from __future__ import annotations
 
 import sqlite3
-from datetime import date
 from pathlib import Path
 
 import pytest
@@ -34,7 +33,6 @@ from thermofooty.sources.stadia import (
     load_club_stadium_history,
     load_stadia,
 )
-
 
 # ─────────────────────────────────────────────────────────────────
 #  URL builder

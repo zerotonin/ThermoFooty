@@ -130,7 +130,6 @@ def test_local_paths_json_overrides_when_env_unset(monkeypatch, tmp_path):
     pick up the data_root field from a local_paths.json sibling to the
     repo root.  Guards against silent regressions in resolution order.
     """
-    import importlib
 
     fake_root = tmp_path / "fake_data"
     fake_root.mkdir()

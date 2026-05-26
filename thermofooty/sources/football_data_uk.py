@@ -27,7 +27,7 @@ import hashlib
 import io
 import sqlite3
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from thermofooty.config import RAW_FOOTBALL_DATA_UK
@@ -381,7 +381,7 @@ def record_provenance(
     notes: str = "",
 ) -> None:
     """Insert one row into ``data_provenance`` for the ingestion run."""
-    accessed_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    accessed_at = datetime.now(UTC).isoformat(timespec="seconds")
     conn.execute(
         """
         INSERT INTO data_provenance (
