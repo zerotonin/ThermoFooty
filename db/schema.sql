@@ -119,6 +119,13 @@ CREATE TABLE IF NOT EXISTS matches (
     ft_away_goals     INTEGER,
     ht_home_goals     INTEGER,
     ht_away_goals     INTEGER,
+    -- Match-level card aggregates from football-data.co.uk (HY+HR, AY+AR).
+    -- NULL when the source season pre-dates per-side card columns.  Phase-3
+    -- fbref ingestion supersedes these with per-player card events in the
+    -- `cards` table; the aggregates here remain as a fast-aggregation
+    -- denominator and a cross-source sanity check.
+    card_count_home   INTEGER,
+    card_count_away   INTEGER,
     roof_closed       INTEGER,                    -- 0/1/NULL — only meaningful for retractable-roof venues
     high_stakes_flag  INTEGER NOT NULL DEFAULT 0, -- per § 2 H4 definition; computed at ingestion
     data_tier         TEXT NOT NULL,              -- 'A' = post-1995 minute-level; 'B' = match-level only
