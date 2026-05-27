@@ -94,6 +94,48 @@ def test_cache_path_collisions_are_url_unique(tmp_path: Path):
 
 
 # ─────────────────────────────────────────────────────────────────
+#  RateLimitedClient WAF-safe defaults
+# ─────────────────────────────────────────────────────────────────
+
+
+def test_rate_limited_client_uses_browser_like_user_agent():
+    """fbref's WAF returns 403 to generic / academic UAs.  The default
+    must be a real-looking browser UA — anything starting with
+    'ThermoFooty/' or similar gets blocked at the edge.
+    """
+    client = RateLimitedClient()
+    assert client.user_agent.startswith("Mozilla/"), (
+        f"default UA must look like a browser, got {client.user_agent!r}"
+    )
+
+
+def test_rate_limited_client_fetch_sends_browser_companion_headers(monkeypatch):
+    """The fetch path must send Accept / Accept-Language / Sec-Fetch-*
+    alongside the UA.  Cloudflare WAFs key on the combination, not
+    the UA alone — sending only a Mozilla UA without companion
+    headers still trips a 403 about half the time.
+    """
+    captured: dict[str, str] = {}
+
+    def fake_get(url, headers=None, timeout=None):
+        captured.update(headers or {})
+
+        class _R:
+            content = b"<html>ok</html>"
+            def raise_for_status(self_inner): return None
+        return _R()
+
+    import requests
+    monkeypatch.setattr(requests, "get", fake_get)
+
+    RateLimitedClient(min_interval_s=0.0).fetch("https://fbref.example/test")
+    assert captured.get("User-Agent", "").startswith("Mozilla/")
+    assert "Accept" in captured and "html" in captured["Accept"]
+    assert "Accept-Language" in captured
+    assert "Sec-Fetch-Mode" in captured
+
+
+# ─────────────────────────────────────────────────────────────────
 #  RateLimitedClient timing  « no network — monkeypatch sleep + time »
 # ─────────────────────────────────────────────────────────────────
 

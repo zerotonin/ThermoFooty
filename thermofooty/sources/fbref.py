@@ -124,6 +124,31 @@ def cache_path_for(url: str, *, cache_dir: Path | None = None) -> Path:
 # ─────────────────────────────────────────────────────────────────
 
 
+# Browser-like default headers — fbref's Cloudflare WAF rejects
+# generic / academic User-Agent strings with a 403 Forbidden.  A Chrome-
+# on-Linux UA plus the standard browser companion headers gets us
+# through reliably; the same combination is what worldfootballR uses
+# under the hood for the same reason.
+_BROWSER_UA: str = (
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+)
+_BROWSER_HEADERS: dict[str, str] = {
+    "Accept": (
+        "text/html,application/xhtml+xml,application/xml;q=0.9,"
+        "image/avif,image/webp,*/*;q=0.8"
+    ),
+    "Accept-Language": "en-GB,en;q=0.9",
+    "Accept-Encoding": "gzip, deflate, br",
+    "DNT": "1",
+    "Upgrade-Insecure-Requests": "1",
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "none",
+    "Sec-Fetch-User": "?1",
+}
+
+
 @dataclass
 class RateLimitedClient:
     """Process-local rate limiter for fbref requests.
@@ -133,13 +158,15 @@ class RateLimitedClient:
     worker) so the rate limit is enforced globally.  Re-instantiating
     a client does NOT reset cross-process timing — for that, run in
     a single process or coordinate via a shared lock file.
+
+    ``user_agent`` defaults to a browser-like Chrome-on-Linux string
+    because fbref's WAF returns 403 Forbidden to generic / academic
+    UAs.  Override with an attribution string only if you have
+    confirmed that fbref will accept it from your IP range.
     """
 
     min_interval_s: float = 3.0
-    user_agent: str = (
-        "ThermoFooty/0.1 (https://github.com/zerotonin/ThermoFooty; "
-        "academic research; contact via repo issues)"
-    )
+    user_agent: str = _BROWSER_UA
     timeout_s: float = 30.0
     _last_request_at: float = 0.0
 
@@ -154,9 +181,10 @@ class RateLimitedClient:
         """Perform one HTTP GET respecting the rate limit.  Returns raw bytes."""
         import requests
         self._sleep_until_ready()
+        headers = {"User-Agent": self.user_agent, **_BROWSER_HEADERS}
         response = requests.get(
             url,
-            headers={"User-Agent": self.user_agent},
+            headers=headers,
             timeout=self.timeout_s,
         )
         response.raise_for_status()
