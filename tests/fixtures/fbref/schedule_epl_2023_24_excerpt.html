@@ -1,0 +1,118 @@
+<!--
+   Hand-crafted excerpt from a fbref season-schedule page, structured
+   to mirror fbref.com/en/comps/9/2023-2024/schedule/... exactly enough
+   for the parser tests.  Real fbref pages have ~380 rows + a lot of
+   wrapping chrome; this fixture keeps the same data-stat attributes
+   on the cells the parser keys on and drops the rest.
+-->
+<!DOCTYPE html>
+<html>
+<head><title>2023-2024 Premier League Scores & Fixtures | FBref.com</title></head>
+<body>
+<table id="sched_2023-2024_9_1">
+<thead>
+  <tr class="thead">
+    <th data-stat="gameweek">Wk</th>
+    <th data-stat="dayofweek">Day</th>
+    <th data-stat="date">Date</th>
+    <th data-stat="start_time">Time</th>
+    <th data-stat="home_team">Home</th>
+    <th data-stat="home_xg">xG</th>
+    <th data-stat="score">Score</th>
+    <th data-stat="away_xg">xG</th>
+    <th data-stat="away_team">Away</th>
+    <th data-stat="attendance">Attendance</th>
+    <th data-stat="venue">Venue</th>
+    <th data-stat="referee">Referee</th>
+    <th data-stat="match_report">Match Report</th>
+    <th data-stat="notes">Notes</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <th scope="row" class="right" data-stat="gameweek">1</th>
+    <td data-stat="dayofweek">Fri</td>
+    <td class="left" data-stat="date">2023-08-11</td>
+    <td class="right" data-stat="start_time">20:00</td>
+    <td class="right" data-stat="home_team"><a href="/en/squads/b8fd03ef/Manchester-City">Manchester City</a></td>
+    <td class="right" data-stat="home_xg">1.6</td>
+    <td class="right" data-stat="score"><a href="/en/matches/aa1de559/Manchester-City-Burnley-August-11-2023-Premier-League">3–0</a></td>
+    <td class="right" data-stat="away_xg">0.6</td>
+    <td class="left" data-stat="away_team"><a href="/en/squads/943e8050/Burnley">Burnley</a></td>
+    <td class="right" data-stat="attendance">53,453</td>
+    <td class="left" data-stat="venue">Etihad Stadium</td>
+    <td class="left" data-stat="referee">Craig Pawson</td>
+    <td class="left" data-stat="match_report"><a href="/en/matches/aa1de559/Manchester-City-Burnley-August-11-2023-Premier-League">Match Report</a></td>
+    <td class="left" data-stat="notes"></td>
+  </tr>
+  <tr>
+    <th scope="row" class="right" data-stat="gameweek">1</th>
+    <td data-stat="dayofweek">Sat</td>
+    <td class="left" data-stat="date">2023-08-12</td>
+    <td class="right" data-stat="start_time">12:30</td>
+    <td class="right" data-stat="home_team"><a href="/en/squads/cd051869/Brentford">Brentford</a></td>
+    <td class="right" data-stat="home_xg">1.4</td>
+    <td class="right" data-stat="score"><a href="/en/matches/bf06f9f8/Brentford-Tottenham-August-13-2023-Premier-League">2–2</a></td>
+    <td class="right" data-stat="away_xg">2.3</td>
+    <td class="left" data-stat="away_team"><a href="/en/squads/361ca564/Tottenham-Hotspur">Tottenham</a></td>
+    <td class="right" data-stat="attendance">17,066</td>
+    <td class="left" data-stat="venue">Gtech Community Stadium</td>
+    <td class="left" data-stat="referee">Robert Jones</td>
+    <td class="left" data-stat="match_report"><a href="/en/matches/bf06f9f8/Brentford-Tottenham-August-13-2023-Premier-League">Match Report</a></td>
+    <td class="left" data-stat="notes"></td>
+  </tr>
+  <tr>
+    <th scope="row" class="right" data-stat="gameweek">38</th>
+    <td data-stat="dayofweek">Sun</td>
+    <td class="left" data-stat="date">2024-05-19</td>
+    <td class="right" data-stat="start_time">16:00</td>
+    <td class="right" data-stat="home_team"><a href="/en/squads/822bd0ba/Liverpool">Liverpool</a></td>
+    <td class="right" data-stat="home_xg">2.1</td>
+    <td class="right" data-stat="score"><a href="/en/matches/9eb5ab94/Liverpool-Wolverhampton-Wanderers-May-19-2024-Premier-League">2–0</a></td>
+    <td class="right" data-stat="away_xg">0.8</td>
+    <td class="left" data-stat="away_team"><a href="/en/squads/8cec06e1/Wolverhampton-Wanderers">Wolves</a></td>
+    <td class="right" data-stat="attendance">59,983</td>
+    <td class="left" data-stat="venue">Anfield</td>
+    <td class="left" data-stat="referee">Tony Harrington</td>
+    <td class="left" data-stat="match_report"><a href="/en/matches/9eb5ab94/Liverpool-Wolverhampton-Wanderers-May-19-2024-Premier-League">Match Report</a></td>
+    <td class="left" data-stat="notes"></td>
+  </tr>
+  <!-- A future fixture (no match-report link) — parser must skip it. -->
+  <tr>
+    <th scope="row" class="right" data-stat="gameweek">38</th>
+    <td data-stat="dayofweek">Sun</td>
+    <td class="left" data-stat="date">2024-05-19</td>
+    <td class="right" data-stat="start_time">16:00</td>
+    <td class="right" data-stat="home_team"><a href="/en/squads/18bb7c10/Arsenal">Arsenal</a></td>
+    <td class="right" data-stat="home_xg"></td>
+    <td class="right" data-stat="score"></td>
+    <td class="right" data-stat="away_xg"></td>
+    <td class="left" data-stat="away_team"><a href="/en/squads/8602292d/Everton">Everton</a></td>
+    <td class="right" data-stat="attendance"></td>
+    <td class="left" data-stat="venue">Emirates Stadium</td>
+    <td class="left" data-stat="referee"></td>
+    <td class="left" data-stat="match_report"><strong></strong></td>
+    <td class="left" data-stat="notes"></td>
+  </tr>
+  <!-- A postponed row — date present, match-report missing. -->
+  <tr>
+    <th scope="row" class="right" data-stat="gameweek">22</th>
+    <td data-stat="dayofweek">Sat</td>
+    <td class="left" data-stat="date">2024-02-03</td>
+    <td class="right" data-stat="start_time">15:00</td>
+    <td class="right" data-stat="home_team"><a href="/en/squads/.../Chelsea">Chelsea</a></td>
+    <td class="right" data-stat="home_xg"></td>
+    <td class="right" data-stat="score"></td>
+    <td class="right" data-stat="away_xg"></td>
+    <td class="left" data-stat="away_team"><a href="/en/squads/.../Newcastle-United">Newcastle Utd</a></td>
+    <td class="right" data-stat="attendance"></td>
+    <td class="left" data-stat="venue">Stamford Bridge</td>
+    <td class="left" data-stat="referee"></td>
+    <td class="left" data-stat="match_report">Postponed</td>
+    <td class="left" data-stat="notes">Postponed</td>
+  </tr>
+  <tr class="spacer partial_table"><td colspan="14"></td></tr>
+</tbody>
+</table>
+</body>
+</html>
