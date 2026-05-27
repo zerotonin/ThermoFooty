@@ -17,8 +17,6 @@ from __future__ import annotations
 import sqlite3
 from pathlib import Path
 
-import pytest
-
 import thermofooty
 from thermofooty import config, constants
 
@@ -221,13 +219,25 @@ def test_anomaly_fetch_empty_is_unverifiable():
     assert list(empty.baseline.columns) == ["tmax"]
 
 
-def test_panel_stub_raises_with_phase_message():
-    from thermofooty.panel import materialise_analysis_panel
-    with pytest.raises(NotImplementedError, match="Phase-4"):
-        materialise_analysis_panel()
+def test_panel_module_exposes_materialiser():
+    """Phase 5a wired the materialiser; the public API must surface
+    materialise_analysis_panel + PANEL_COLUMNS for scripts/inference
+    to consume.
+    """
+    from thermofooty import panel
+    assert hasattr(panel, "materialise_analysis_panel")
+    assert hasattr(panel, "PANEL_COLUMNS")
+    assert isinstance(panel.PANEL_COLUMNS, list)
+    assert len(panel.PANEL_COLUMNS) > 10
 
 
-def test_inference_run_h1_stub_raises_with_phase_message():
-    from thermofooty.inference import run_h1
-    with pytest.raises(NotImplementedError, match="Phase-5"):
-        run_h1()
+def test_inference_module_exposes_run_h1_and_event_builder():
+    """Phase 5a implemented run_h1 + build_h1_events on top of the
+    rerandomstats case-crossover.  Both must be importable so
+    scripts/run_h1.py and downstream callers don't need to reach
+    into private symbols.
+    """
+    from thermofooty import inference
+    assert hasattr(inference, "run_h1")
+    assert hasattr(inference, "build_h1_events")
+    assert hasattr(inference, "case_crossover_conditional_logit")
