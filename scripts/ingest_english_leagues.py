@@ -37,7 +37,7 @@ from rich.console import Console
 from rich.table import Table
 
 from thermofooty.config import SCHEMA_SQL_PATH, assert_data_root_ready
-from thermofooty.db import connect
+from thermofooty.db import connect, migrate_schema
 from thermofooty.sources.football_data_uk import (
     LEAGUE_METADATA,
     all_seasons_for,
@@ -72,6 +72,24 @@ def _bootstrap_schema_if_empty(conn: sqlite3.Connection) -> bool:
     sql = SCHEMA_SQL_PATH.read_text(encoding="utf-8")
     conn.executescript(sql)
     return True
+
+
+def _bootstrap_or_migrate(
+    conn: sqlite3.Connection, console: Console,
+) -> None:
+    """Apply full DDL on a fresh DB, otherwise ALTER TABLE in any
+    columns added by post-bootstrap schema bumps.
+    """
+    applied = _bootstrap_schema_if_empty(conn)
+    if applied:
+        console.log("[yellow]bootstrapped empty database from db/schema.sql[/yellow]")
+        return
+    added = migrate_schema(conn)
+    if added:
+        console.log(
+            "[yellow]migrated matches table — added columns: "
+            f"{', '.join(added)}[/yellow]"
+        )
 
 
 def _ensure_league(
@@ -161,9 +179,7 @@ def main(argv: list[str]) -> int:
     table.add_column("Cache?", justify="center")
 
     with connect() as conn:
-        applied = _bootstrap_schema_if_empty(conn)
-        if applied:
-            console.log("[yellow]bootstrapped empty database from db/schema.sql[/yellow]")
+        _bootstrap_or_migrate(conn, console)
         stadium_name_to_id, country_id = load_stadia(conn)
         alias_to_club_id, periods = load_club_stadium_history(
             conn, stadium_name_to_id,

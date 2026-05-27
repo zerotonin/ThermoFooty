@@ -31,7 +31,7 @@ from rich.console import Console
 from rich.table import Table
 
 from thermofooty.config import assert_data_root_ready
-from thermofooty.db import connect
+from thermofooty.db import connect, migrate_schema
 from thermofooty.sources.fbref import RateLimitedClient
 from thermofooty.sources.fbref_ingest import (
     ingest_one_season,
@@ -109,6 +109,12 @@ def main(argv: list[str]) -> int:
     table.add_column("Failed", justify="right")
 
     with connect() as conn:
+        added = migrate_schema(conn)
+        if added:
+            console.log(
+                "[yellow]migrated matches table — added columns: "
+                f"{', '.join(added)}[/yellow]"
+            )
         stadium_lookup, _country_id = load_stadia(conn)
         alias_to_club_id, _ = load_club_stadium_history(conn, stadium_lookup)
 
