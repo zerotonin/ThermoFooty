@@ -1,0 +1,152 @@
+<!--
+   Hand-crafted excerpt from a fbref match-report page (Manchester
+   City vs Burnley, 2023-08-11, fbref id aa1de559).  Mirrors the
+   real DOM enough for the lineup + card parsers:
+
+   - Two `stats_<teamhash>_summary` tables (home then away)
+   - Per-player rows with stable data-stat attributes
+   - A spacer row separating starters from subs
+   - An `events_wrap` block with two card events (one yellow per team,
+     one red with annotated 'Violent conduct' reason to exercise the
+     aggression-set classifier)
+
+   Player IDs and team IDs are realistic fbref 8-char slugs.
+-->
+<!DOCTYPE html>
+<html>
+<head><title>Manchester City vs Burnley Match Report — August 11, 2023</title></head>
+<body>
+
+<div id="events_wrap">
+  <div class="event a yellow_card" title="Foul">
+    <div class="event_icon yellow_card"></div>
+    35'
+    <a href="/en/players/df69b544/Rodri">Rodri</a>
+    <small>(Foul)</small>
+  </div>
+  <div class="event b red_card" title="Violent conduct">
+    <div class="event_icon red_card"></div>
+    72'
+    <a href="/en/players/c7195ce6/Lyle-Foster">Lyle Foster</a>
+    <small>(Violent conduct)</small>
+  </div>
+  <div class="event b yellow_card" title="Time-wasting">
+    <div class="event_icon yellow_card"></div>
+    81'
+    <a href="/en/players/2c2bdcc4/Josh-Brownhill">Josh Brownhill</a>
+    <small>(Time-wasting)</small>
+  </div>
+</div>
+
+<table id="stats_b8fd03ef_summary">
+<caption>Manchester City Player Stats Table</caption>
+<thead>
+  <tr><th>Player</th></tr>
+</thead>
+<tbody>
+  <tr>
+    <th data-stat="player" scope="row">
+      <a href="/en/players/8effd185/Ederson">Ederson</a>
+    </th>
+    <td data-stat="shirtnumber">31</td>
+    <td data-stat="nationality">BRA</td>
+    <td data-stat="position">GK</td>
+    <td data-stat="age">29</td>
+    <td data-stat="minutes">90</td>
+    <td data-stat="goals">0</td>
+    <td data-stat="cards_yellow">0</td>
+    <td data-stat="cards_red">0</td>
+  </tr>
+  <tr>
+    <th data-stat="player" scope="row">
+      <a href="/en/players/df69b544/Rodri">Rodri</a>
+    </th>
+    <td data-stat="shirtnumber">16</td>
+    <td data-stat="nationality">ESP</td>
+    <td data-stat="position">MF</td>
+    <td data-stat="age">27</td>
+    <td data-stat="minutes">90</td>
+    <td data-stat="goals">0</td>
+    <td data-stat="cards_yellow">1</td>
+    <td data-stat="cards_red">0</td>
+  </tr>
+  <tr>
+    <th data-stat="player" scope="row">
+      <a href="/en/players/3bb7b8b4/Erling-Haaland">Erling Haaland</a>
+    </th>
+    <td data-stat="shirtnumber">9</td>
+    <td data-stat="nationality">NOR</td>
+    <td data-stat="position">FW</td>
+    <td data-stat="age">23</td>
+    <td data-stat="minutes">75</td>
+    <td data-stat="goals">2</td>
+    <td data-stat="cards_yellow">0</td>
+    <td data-stat="cards_red">0</td>
+  </tr>
+  <tr class="spacer partial_table"><td colspan="9"></td></tr>
+  <tr>
+    <th data-stat="player" scope="row">
+      <a href="/en/players/49a0d4b1/Julian-Alvarez">Julián Álvarez</a>
+    </th>
+    <td data-stat="shirtnumber">19</td>
+    <td data-stat="nationality">ARG</td>
+    <td data-stat="position">FW</td>
+    <td data-stat="age">23</td>
+    <td data-stat="minutes">15</td>
+    <td data-stat="goals">0</td>
+    <td data-stat="cards_yellow">0</td>
+    <td data-stat="cards_red">0</td>
+  </tr>
+</tbody>
+</table>
+
+<table id="stats_943e8050_summary">
+<caption>Burnley Player Stats Table</caption>
+<thead>
+  <tr><th>Player</th></tr>
+</thead>
+<tbody>
+  <tr>
+    <th data-stat="player" scope="row">
+      <a href="/en/players/d8f4ef64/James-Trafford">James Trafford</a>
+    </th>
+    <td data-stat="shirtnumber">1</td>
+    <td data-stat="nationality">ENG</td>
+    <td data-stat="position">GK</td>
+    <td data-stat="age">21</td>
+    <td data-stat="minutes">90</td>
+    <td data-stat="goals">0</td>
+    <td data-stat="cards_yellow">0</td>
+    <td data-stat="cards_red">0</td>
+  </tr>
+  <tr>
+    <th data-stat="player" scope="row">
+      <a href="/en/players/c7195ce6/Lyle-Foster">Lyle Foster</a>
+    </th>
+    <td data-stat="shirtnumber">17</td>
+    <td data-stat="nationality">RSA</td>
+    <td data-stat="position">FW</td>
+    <td data-stat="age">23</td>
+    <td data-stat="minutes">72</td>
+    <td data-stat="goals">0</td>
+    <td data-stat="cards_yellow">0</td>
+    <td data-stat="cards_red">1</td>
+  </tr>
+  <tr>
+    <th data-stat="player" scope="row">
+      <a href="/en/players/2c2bdcc4/Josh-Brownhill">Josh Brownhill</a>
+    </th>
+    <td data-stat="shirtnumber">8</td>
+    <td data-stat="nationality">ENG</td>
+    <td data-stat="position">MF</td>
+    <td data-stat="age">28</td>
+    <td data-stat="minutes">90</td>
+    <td data-stat="goals">0</td>
+    <td data-stat="cards_yellow">1</td>
+    <td data-stat="cards_red">0</td>
+  </tr>
+</tbody>
+</table>
+
+</body>
+</html>
